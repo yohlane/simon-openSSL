@@ -1,4 +1,4 @@
-+AC_INIT([libressl], m4_esyscmd([tr -d '\n' < VERSION]))
++AC_INIT([libressl],[m4_esyscmd(tr -d '\n' < VERSION)])
 AC_CANONICAL_HOST
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_MACRO_DIR([m4])
@@ -43,7 +43,7 @@ AC_CHECK_FUNC([dl_iterate_phdr],,
 	[AC_SEARCH_LIBS([dl_iterate_phdr],[dl])])
 
 AC_PROG_CC
-AC_PROG_LIBTOOL
+LT_INIT
 AC_PROG_CC_STDC
 AM_PROG_CC_C_O
 

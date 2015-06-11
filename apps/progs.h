@@ -226,6 +226,9 @@ FUNCTION functions[] = {
 	{ FUNC_TYPE_CIPHER, "rc5-cfb", enc_main },
 	{ FUNC_TYPE_CIPHER, "rc5-ofb", enc_main },
 #endif
+	#ifndef OPENSSL_NO_SIMON
+	{ FUNC_TYPE_CIPHER, "simon", enc_main },
+#endif
 #ifdef ZLIB
 	{ FUNC_TYPE_CIPHER, "zlib", enc_main },
 #endif

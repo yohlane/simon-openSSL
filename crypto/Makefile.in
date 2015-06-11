@@ -342,6 +342,7 @@ am_libcrypto_la_OBJECTS = libcrypto_la-cpt_err.lo \
 	evp/libcrypto_la-e_idea.lo evp/libcrypto_la-e_null.lo \
 	evp/libcrypto_la-e_old.lo evp/libcrypto_la-e_rc2.lo \
 	evp/libcrypto_la-e_rc4.lo evp/libcrypto_la-e_rc4_hmac_md5.lo \
+	evp/libcrypto_la-e_simon.lo \
 	evp/libcrypto_la-e_xcbc_d.lo evp/libcrypto_la-encode.lo \
 	evp/libcrypto_la-evp_aead.lo evp/libcrypto_la-evp_enc.lo \
 	evp/libcrypto_la-evp_err.lo evp/libcrypto_la-evp_key.lo \
@@ -758,7 +759,7 @@ libcrypto_la_SOURCES = cpt_err.c cryptlib.c cversion.c ex_data.c \
 	evp/e_aes_cbc_hmac_sha1.c evp/e_bf.c evp/e_cast.c \
 	evp/e_chacha.c evp/e_chacha20poly1305.c evp/e_des.c \
 	evp/e_des3.c evp/e_idea.c evp/e_null.c evp/e_old.c evp/e_rc2.c \
-	evp/e_rc4.c evp/e_rc4_hmac_md5.c evp/e_xcbc_d.c evp/encode.c \
+	evp/e_rc4.c evp/e_rc4_hmac_md5.c evp/e_simon.c evp/e_xcbc_d.c evp/encode.c \
 	evp/evp_aead.c evp/evp_enc.c evp/evp_err.c evp/evp_key.c \
 	evp/evp_lib.c evp/evp_pbe.c evp/evp_pkey.c evp/m_dss.c \
 	evp/m_dss1.c evp/m_ecdsa.c evp/m_md4.c evp/m_md5.c \
@@ -798,6 +799,7 @@ libcrypto_la_SOURCES = cpt_err.c cryptlib.c cversion.c ex_data.c \
 	rsa/rsa_prn.c rsa/rsa_pss.c rsa/rsa_saos.c rsa/rsa_sign.c \
 	rsa/rsa_ssl.c rsa/rsa_x931.c sha/sha1_one.c sha/sha1dgst.c \
 	sha/sha256.c sha/sha512.c sha/sha_dgst.c sha/sha_one.c \
+	simon/simon.c \
 	stack/stack.c ts/ts_asn1.c ts/ts_conf.c ts/ts_err.c \
 	ts/ts_lib.c ts/ts_req_print.c ts/ts_req_utils.c \
 	ts/ts_rsp_print.c ts/ts_rsp_sign.c ts/ts_rsp_utils.c \
@@ -823,7 +825,8 @@ libcrypto_la_SOURCES = cpt_err.c cryptlib.c cversion.c ex_data.c \
 	x509v3/v3_prn.c x509v3/v3_purp.c x509v3/v3_skey.c \
 	x509v3/v3_sxnet.c x509v3/v3_utl.c x509v3/v3err.c
 EXTRA_libcrypto_la_SOURCES = des/ncbc_enc.c chacha/chacha-merged.c \
-	poly1305/poly1305-donna.c
+	poly1305/poly1305-donna.c \
+	simon/simon-merge.c
 all: all-am
 
 .SUFFIXES:
@@ -1651,6 +1654,8 @@ evp/libcrypto_la-e_rc4.lo: evp/$(am__dirstamp) \
 	evp/$(DEPDIR)/$(am__dirstamp)
 evp/libcrypto_la-e_rc4_hmac_md5.lo: evp/$(am__dirstamp) \
 	evp/$(DEPDIR)/$(am__dirstamp)
+evp/libcrypto_la-e_simon.lo: evp/$(am__dirstamp) \
+	evp/$(DEPDIR)/$(am__dirstamp)
 evp/libcrypto_la-e_xcbc_d.lo: evp/$(am__dirstamp) \
 	evp/$(DEPDIR)/$(am__dirstamp)
 evp/libcrypto_la-encode.lo: evp/$(am__dirstamp) \
@@ -2063,6 +2068,14 @@ sha/libcrypto_la-sha_dgst.lo: sha/$(am__dirstamp) \
 	sha/$(DEPDIR)/$(am__dirstamp)
 sha/libcrypto_la-sha_one.lo: sha/$(am__dirstamp) \
 	sha/$(DEPDIR)/$(am__dirstamp)
+simon/$(am__dirstamp):
+	@$(MKDIR_P) simon
+	@: > simon/$(am__dirstamp)
+simon/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) simon/$(DEPDIR)
+	@: > simon/$(DEPDIR)/$(am__dirstamp)
+simon/libcrypto_la-simon.lo: simon/$(am__dirstamp) \
+	simon/$(DEPDIR)/$(am__dirstamp)
 stack/$(am__dirstamp):
 	@$(MKDIR_P) stack
 	@: > stack/$(am__dirstamp)
@@ -2265,6 +2278,8 @@ chacha/libcrypto_la-chacha-merged.lo: chacha/$(am__dirstamp) \
 	chacha/$(DEPDIR)/$(am__dirstamp)
 poly1305/libcrypto_la-poly1305-donna.lo: poly1305/$(am__dirstamp) \
 	poly1305/$(DEPDIR)/$(am__dirstamp)
+simon/libcrypto_la-simon-merged.lo: simon/$(am__dirstamp) \
+	simon/$(DEPDIR)/$(am__dirstamp)
 
 libcrypto.la: $(libcrypto_la_OBJECTS) $(libcrypto_la_DEPENDENCIES) $(EXTRA_libcrypto_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libcrypto_la_LINK) -rpath $(libdir) $(libcrypto_la_OBJECTS) $(libcrypto_la_LIBADD) $(LIBS)
@@ -2355,6 +2370,8 @@ mostlyclean-compile:
 	-rm -f rsa/*.lo
 	-rm -f sha/*.$(OBJEXT)
 	-rm -f sha/*.lo
+	-rm -f simon/*.$(OBJEXT)
+	-rm -f simon/*.lo
 	-rm -f stack/*.$(OBJEXT)
 	-rm -f stack/*.lo
 	-rm -f ts/*.$(OBJEXT)
@@ -2836,6 +2853,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@sha/$(DEPDIR)/libcrypto_la-sha512.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@sha/$(DEPDIR)/libcrypto_la-sha_dgst.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@sha/$(DEPDIR)/libcrypto_la-sha_one.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@simon/$(DEPDIR)/libcrypto_la-simon-merged.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@simon/$(DEPDIR)/libcrypto_la-simon.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@stack/$(DEPDIR)/libcrypto_la-stack.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ts/$(DEPDIR)/libcrypto_la-ts_asn1.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@ts/$(DEPDIR)/libcrypto_la-ts_conf.Plo@am__quote@
@@ -5136,6 +5155,13 @@ evp/libcrypto_la-e_rc4_hmac_md5.lo: evp/e_rc4_hmac_md5.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcrypto_la_CFLAGS) $(CFLAGS) -c -o evp/libcrypto_la-e_rc4_hmac_md5.lo `test -f 'evp/e_rc4_hmac_md5.c' || echo '$(srcdir)/'`evp/e_rc4_hmac_md5.c
 
+evp/libcrypto_la-e_simon.lo: evp/e_simon.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcrypto_la_CFLAGS) $(CFLAGS) -MT evp/libcrypto_la-e_simon.lo -MD -MP -MF evp/$(DEPDIR)/libcrypto_la-e_simon.Tpo -c -o evp/libcrypto_la-e_simon.lo `test -f 'evp/e_simon.c' || echo '$(srcdir)/'`evp/e_simon.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) evp/$(DEPDIR)/libcrypto_la-e_simon.Tpo evp/$(DEPDIR)/libcrypto_la-e_simon.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='evp/e_simon.c' object='evp/libcrypto_la-e_simon.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcrypto_la_CFLAGS) $(CFLAGS) -c -o evp/libcrypto_la-e_simon.lo `test -f 'evp/e_simon.c' || echo '$(srcdir)/'`evp/e_simon.c
+
 evp/libcrypto_la-e_xcbc_d.lo: evp/e_xcbc_d.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcrypto_la_CFLAGS) $(CFLAGS) -MT evp/libcrypto_la-e_xcbc_d.lo -MD -MP -MF evp/$(DEPDIR)/libcrypto_la-e_xcbc_d.Tpo -c -o evp/libcrypto_la-e_xcbc_d.lo `test -f 'evp/e_xcbc_d.c' || echo '$(srcdir)/'`evp/e_xcbc_d.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) evp/$(DEPDIR)/libcrypto_la-e_xcbc_d.Tpo evp/$(DEPDIR)/libcrypto_la-e_xcbc_d.Plo
@@ -6718,6 +6744,13 @@ poly1305/libcrypto_la-poly1305-donna.lo: poly1305/poly1305-donna.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcrypto_la_CFLAGS) $(CFLAGS) -c -o poly1305/libcrypto_la-poly1305-donna.lo `test -f 'poly1305/poly1305-donna.c' || echo '$(srcdir)/'`poly1305/poly1305-donna.c
 
+simon/libcrypto_la-simon-merged.lo: simon/simon-merged.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcrypto_la_CFLAGS) $(CFLAGS) -MT simon/libcrypto_la-simon-merged.lo -MD -MP -MF simon/$(DEPDIR)/libcrypto_la-simon-merged.Tpo -c -o simon/libcrypto_la-simon-merged.lo `test -f 'simon/simon-merged.c' || echo '$(srcdir)/'`simon/simon-merged.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) simon/$(DEPDIR)/libcrypto_la-simon-merged.Tpo simon/$(DEPDIR)/libcrypto_la-simon-merged.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='simon/simon-merged.c' object='simon/libcrypto_la-simon-merged.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libcrypto_la_CFLAGS) $(CFLAGS) -c -o simon/libcrypto_la-simon-merged.lo `test -f 'simon/simon-merged.c' || echo '$(srcdir)/'`simon/simon-merged.c
+
 mostlyclean-libtool:
 	-rm -f *.lo
 
@@ -6765,6 +6798,7 @@ clean-libtool:
 	-rm -rf ripemd/.libs ripemd/_libs
 	-rm -rf rsa/.libs rsa/_libs
 	-rm -rf sha/.libs sha/_libs
+	-rm -rf simon/.libs simon/_libs
 	-rm -rf stack/.libs stack/_libs
 	-rm -rf ts/.libs ts/_libs
 	-rm -rf txt_db/.libs txt_db/_libs
@@ -6972,6 +7006,8 @@ distclean-generic:
 	-rm -f rsa/$(am__dirstamp)
 	-rm -f sha/$(DEPDIR)/$(am__dirstamp)
 	-rm -f sha/$(am__dirstamp)
+	-rm -f simon/$(DEPDIR)/$(am__dirstamp)
+	-rm -f simon/$(am__dirstamp)
 	-rm -f stack/$(DEPDIR)/$(am__dirstamp)
 	-rm -f stack/$(am__dirstamp)
 	-rm -f ts/$(DEPDIR)/$(am__dirstamp)
@@ -6996,7 +7032,7 @@ clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
 	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf ./$(DEPDIR) aes/$(DEPDIR) asn1/$(DEPDIR) bf/$(DEPDIR) bio/$(DEPDIR) bn/$(DEPDIR) buffer/$(DEPDIR) cast/$(DEPDIR) chacha/$(DEPDIR) cmac/$(DEPDIR) comp/$(DEPDIR) compat/$(DEPDIR) conf/$(DEPDIR) des/$(DEPDIR) dh/$(DEPDIR) dsa/$(DEPDIR) dso/$(DEPDIR) ec/$(DEPDIR) ecdh/$(DEPDIR) ecdsa/$(DEPDIR) engine/$(DEPDIR) err/$(DEPDIR) evp/$(DEPDIR) hmac/$(DEPDIR) idea/$(DEPDIR) krb5/$(DEPDIR) lhash/$(DEPDIR) md4/$(DEPDIR) md5/$(DEPDIR) mdc2/$(DEPDIR) modes/$(DEPDIR) objects/$(DEPDIR) ocsp/$(DEPDIR) pem/$(DEPDIR) pkcs12/$(DEPDIR) pkcs7/$(DEPDIR) poly1305/$(DEPDIR) rand/$(DEPDIR) rc2/$(DEPDIR) rc4/$(DEPDIR) ripemd/$(DEPDIR) rsa/$(DEPDIR) sha/$(DEPDIR) stack/$(DEPDIR) ts/$(DEPDIR) txt_db/$(DEPDIR) ui/$(DEPDIR) whrlpool/$(DEPDIR) x509/$(DEPDIR) x509v3/$(DEPDIR)
+	-rm -rf ./$(DEPDIR) aes/$(DEPDIR) asn1/$(DEPDIR) bf/$(DEPDIR) bio/$(DEPDIR) bn/$(DEPDIR) buffer/$(DEPDIR) cast/$(DEPDIR) chacha/$(DEPDIR) cmac/$(DEPDIR) comp/$(DEPDIR) compat/$(DEPDIR) conf/$(DEPDIR) des/$(DEPDIR) dh/$(DEPDIR) dsa/$(DEPDIR) dso/$(DEPDIR) ec/$(DEPDIR) ecdh/$(DEPDIR) ecdsa/$(DEPDIR) engine/$(DEPDIR) err/$(DEPDIR) evp/$(DEPDIR) hmac/$(DEPDIR) idea/$(DEPDIR) krb5/$(DEPDIR) lhash/$(DEPDIR) md4/$(DEPDIR) md5/$(DEPDIR) mdc2/$(DEPDIR) modes/$(DEPDIR) objects/$(DEPDIR) ocsp/$(DEPDIR) pem/$(DEPDIR) pkcs12/$(DEPDIR) pkcs7/$(DEPDIR) poly1305/$(DEPDIR) rand/$(DEPDIR) rc2/$(DEPDIR) rc4/$(DEPDIR) ripemd/$(DEPDIR) rsa/$(DEPDIR) sha/$(DEPDIR) simon/$(DEPDIR) stack/$(DEPDIR) ts/$(DEPDIR) txt_db/$(DEPDIR) ui/$(DEPDIR) whrlpool/$(DEPDIR) x509/$(DEPDIR) x509v3/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -7042,7 +7078,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf ./$(DEPDIR) aes/$(DEPDIR) asn1/$(DEPDIR) bf/$(DEPDIR) bio/$(DEPDIR) bn/$(DEPDIR) buffer/$(DEPDIR) cast/$(DEPDIR) chacha/$(DEPDIR) cmac/$(DEPDIR) comp/$(DEPDIR) compat/$(DEPDIR) conf/$(DEPDIR) des/$(DEPDIR) dh/$(DEPDIR) dsa/$(DEPDIR) dso/$(DEPDIR) ec/$(DEPDIR) ecdh/$(DEPDIR) ecdsa/$(DEPDIR) engine/$(DEPDIR) err/$(DEPDIR) evp/$(DEPDIR) hmac/$(DEPDIR) idea/$(DEPDIR) krb5/$(DEPDIR) lhash/$(DEPDIR) md4/$(DEPDIR) md5/$(DEPDIR) mdc2/$(DEPDIR) modes/$(DEPDIR) objects/$(DEPDIR) ocsp/$(DEPDIR) pem/$(DEPDIR) pkcs12/$(DEPDIR) pkcs7/$(DEPDIR) poly1305/$(DEPDIR) rand/$(DEPDIR) rc2/$(DEPDIR) rc4/$(DEPDIR) ripemd/$(DEPDIR) rsa/$(DEPDIR) sha/$(DEPDIR) stack/$(DEPDIR) ts/$(DEPDIR) txt_db/$(DEPDIR) ui/$(DEPDIR) whrlpool/$(DEPDIR) x509/$(DEPDIR) x509v3/$(DEPDIR)
+	-rm -rf ./$(DEPDIR) aes/$(DEPDIR) asn1/$(DEPDIR) bf/$(DEPDIR) bio/$(DEPDIR) bn/$(DEPDIR) buffer/$(DEPDIR) cast/$(DEPDIR) chacha/$(DEPDIR) cmac/$(DEPDIR) comp/$(DEPDIR) compat/$(DEPDIR) conf/$(DEPDIR) des/$(DEPDIR) dh/$(DEPDIR) dsa/$(DEPDIR) dso/$(DEPDIR) ec/$(DEPDIR) ecdh/$(DEPDIR) ecdsa/$(DEPDIR) engine/$(DEPDIR) err/$(DEPDIR) evp/$(DEPDIR) hmac/$(DEPDIR) idea/$(DEPDIR) krb5/$(DEPDIR) lhash/$(DEPDIR) md4/$(DEPDIR) md5/$(DEPDIR) mdc2/$(DEPDIR) modes/$(DEPDIR) objects/$(DEPDIR) ocsp/$(DEPDIR) pem/$(DEPDIR) pkcs12/$(DEPDIR) pkcs7/$(DEPDIR) poly1305/$(DEPDIR) rand/$(DEPDIR) rc2/$(DEPDIR) rc4/$(DEPDIR) ripemd/$(DEPDIR) rsa/$(DEPDIR) sha/$(DEPDIR) simon/$(DEPDIR) stack/$(DEPDIR) ts/$(DEPDIR) txt_db/$(DEPDIR) ui/$(DEPDIR) whrlpool/$(DEPDIR) x509/$(DEPDIR) x509v3/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

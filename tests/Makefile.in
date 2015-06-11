@@ -92,6 +92,7 @@ TESTS = $(am__append_1) aes_wrap$(EXEEXT) asn1test$(EXEEXT) \
 	poly1305test$(EXEEXT) randtest$(EXEEXT) rc2test$(EXEEXT) \
 	rc4test$(EXEEXT) rmdtest$(EXEEXT) sha1test$(EXEEXT) \
 	sha256test$(EXEEXT) sha512test$(EXEEXT) shatest$(EXEEXT) \
+	simontest$(EXEEXT) \
 	timingsafe$(EXEEXT) utf8test$(EXEEXT) aeadtest.sh evptest.sh \
 	pq_test.sh ssltest.sh arc4randomforktest.sh
 check_PROGRAMS = aeadtest$(EXEEXT) aes_wrap$(EXEEXT) \
@@ -108,7 +109,8 @@ check_PROGRAMS = aeadtest$(EXEEXT) aes_wrap$(EXEEXT) \
 	poly1305test$(EXEEXT) pq_test$(EXEEXT) randtest$(EXEEXT) \
 	rc2test$(EXEEXT) rc4test$(EXEEXT) rmdtest$(EXEEXT) \
 	sha1test$(EXEEXT) sha256test$(EXEEXT) sha512test$(EXEEXT) \
-	shatest$(EXEEXT) ssltest$(EXEEXT) timingsafe$(EXEEXT) \
+	shatest$(EXEEXT)  simontest$(EXEEXT) ssltest$(EXEEXT) \
+	timingsafe$(EXEEXT) \
 	utf8test$(EXEEXT)
 @NO_ARC4RANDOM_BUF_FALSE@am__append_1 = pidwraptest.sh
 subdir = tests
@@ -290,6 +292,10 @@ am_shatest_OBJECTS = shatest.$(OBJEXT)
 shatest_OBJECTS = $(am_shatest_OBJECTS)
 shatest_DEPENDENCIES = $(top_builddir)/ssl/libssl.la \
 	$(top_builddir)/crypto/libcrypto.la
+am_simontest_OBJECTS = simontest.$(OBJEXT)
+simontest_OBJECTS = $(am_simontest_OBJECTS)
+simontest_DEPENDENCIES = $(top_builddir)/ssl/libssl.la \
+	$(top_builddir)/crypto/libcrypto.la
 am_ssltest_OBJECTS = ssltest.$(OBJEXT)
 ssltest_OBJECTS = $(am_ssltest_OBJECTS)
 ssltest_DEPENDENCIES = $(top_builddir)/ssl/libssl.la \
@@ -351,7 +357,8 @@ SOURCES = $(aeadtest_SOURCES) $(aes_wrap_SOURCES) \
 	$(pq_test_SOURCES) $(randtest_SOURCES) $(rc2test_SOURCES) \
 	$(rc4test_SOURCES) $(rmdtest_SOURCES) $(sha1test_SOURCES) \
 	$(sha256test_SOURCES) $(sha512test_SOURCES) $(shatest_SOURCES) \
-	$(ssltest_SOURCES) $(timingsafe_SOURCES) $(utf8test_SOURCES)
+	$(simontest_SOURCES) $(ssltest_SOURCES) $(timingsafe_SOURCES) \
+	$(utf8test_SOURCES)
 DIST_SOURCES = $(aeadtest_SOURCES) $(aes_wrap_SOURCES) \
 	$(arc4randomforktest_SOURCES) $(asn1test_SOURCES) \
 	$(base64test_SOURCES) $(bftest_SOURCES) $(biotest_SOURCES) \
@@ -367,7 +374,8 @@ DIST_SOURCES = $(aeadtest_SOURCES) $(aes_wrap_SOURCES) \
 	$(pq_test_SOURCES) $(randtest_SOURCES) $(rc2test_SOURCES) \
 	$(rc4test_SOURCES) $(rmdtest_SOURCES) $(sha1test_SOURCES) \
 	$(sha256test_SOURCES) $(sha512test_SOURCES) $(shatest_SOURCES) \
-	$(ssltest_SOURCES) $(timingsafe_SOURCES) $(utf8test_SOURCES)
+	$(chachatest_SOURCES) $(ssltest_SOURCES) $(timingsafe_SOURCES) \
+	$(utf8test_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -842,6 +850,9 @@ sha512test_LDADD = $(top_builddir)/ssl/libssl.la \
 shatest_SOURCES = shatest.c
 shatest_LDADD = $(top_builddir)/ssl/libssl.la \
 	$(top_builddir)/crypto/libcrypto.la
+simontest_SOURCES = simontest.c
+simontest_LDADD = $(top_builddir)/ssl/libssl.la \
+	$(top_builddir)/crypto/libcrypto.la
 ssltest_SOURCES = ssltest.c
 ssltest_LDADD = $(top_builddir)/ssl/libssl.la \
 	$(top_builddir)/crypto/libcrypto.la
@@ -1060,6 +1071,10 @@ shatest$(EXEEXT): $(shatest_OBJECTS) $(shatest_DEPENDENCIES) $(EXTRA_shatest_DEP
 	@rm -f shatest$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(shatest_OBJECTS) $(shatest_LDADD) $(LIBS)
 
+simontest$(EXEEXT): $(simontest_OBJECTS) $(simontest_DEPENDENCIES) $(EXTRA_simontest_DEPENDENCIES) 
+	@rm -f simontest$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(simontest_OBJECTS) $(simontest_LDADD) $(LIBS)
+
 ssltest$(EXEEXT): $(ssltest_OBJECTS) $(ssltest_DEPENDENCIES) $(EXTRA_ssltest_DEPENDENCIES) 
 	@rm -f ssltest$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(ssltest_OBJECTS) $(ssltest_LDADD) $(LIBS)
@@ -1120,6 +1135,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sha256test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sha512test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/shatest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simontest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ssltest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timingsafe.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utf8test.Po@am__quote@
@@ -1595,6 +1611,13 @@ sha512test.log: sha512test$(EXEEXT)
 shatest.log: shatest$(EXEEXT)
 	@p='shatest$(EXEEXT)'; \
 	b='shatest'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+simontest.log: simontest$(EXEEXT)
+	@p='simontest$(EXEEXT)'; \
+	b='simontest'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
