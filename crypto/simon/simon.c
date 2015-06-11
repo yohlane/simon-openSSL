@@ -19,3 +19,17 @@
 #include <openssl/simon.h>
 
 #include "simon-merged.c"
+
+
+void 
+Simon_set_key(simon_ctx *x, const u64 *k){
+    //simon_keysetup(simon_ctx *x, const u8 *k);
+}
+void 
+Simon_set_iv(){
+    //simon_ivsetup((simon_ctx *)ctx, iv);
+}
+void 
+Simon(){
+    //simon_encrypt_bytes((simon_ctx *)ctx, in, out, (uint32_t)len);
+}

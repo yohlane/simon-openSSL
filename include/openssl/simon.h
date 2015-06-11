@@ -24,10 +24,26 @@
 #endif
 
 #include <stddef.h>
+#include <stdint.h>
 
 #ifdef  __cplusplus
 extern "C" {
 #endif
+
+typedef uint64_t u64;
+
+typedef struct{
+    u64 n;
+    u64 m;
+    u64 k;
+    u64 T;
+    u64 j;
+}simon_ctx;
+
+void Simon_set_key(simon_ctx *x, const u64 *k);
+void Simon_set_iv();
+void Simon();
+
 
 #ifdef  __cplusplus
 }

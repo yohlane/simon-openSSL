@@ -26,6 +26,3 @@ man/Makefile
 openssl.pc
 ssl/.libs/
 ssl/Makefile
-aclocal.m4
-configure
-configure.ac

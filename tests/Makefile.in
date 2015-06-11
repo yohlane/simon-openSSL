@@ -374,7 +374,7 @@ DIST_SOURCES = $(aeadtest_SOURCES) $(aes_wrap_SOURCES) \
 	$(pq_test_SOURCES) $(randtest_SOURCES) $(rc2test_SOURCES) \
 	$(rc4test_SOURCES) $(rmdtest_SOURCES) $(sha1test_SOURCES) \
 	$(sha256test_SOURCES) $(sha512test_SOURCES) $(shatest_SOURCES) \
-	$(chachatest_SOURCES) $(ssltest_SOURCES) $(timingsafe_SOURCES) \
+	$(simontest_SOURCES) $(ssltest_SOURCES) $(timingsafe_SOURCES) \
 	$(utf8test_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
