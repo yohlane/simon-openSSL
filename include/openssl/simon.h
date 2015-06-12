@@ -18,6 +18,7 @@
 #define HEADER_SIMON_H
 
 #include <openssl/opensslconf.h>
+ #include <x86intrin.h>
 
 #if defined(OPENSSL_NO_SIMON)
 #error Simon is disabled.
@@ -30,19 +31,22 @@
 extern "C" {
 #endif
 
-typedef uint64_t u64;
+#define LCS _lrotl //left circular shift
+//#define ROTL2( X, n, L )    ( ( ( X ) << ( n + 64 - L ) >> (64-L)) | ( ( X ) >> ( L - n ) ) )
+#define ROTL2( n, X, L )    ( ( ( X ) << ( n + 64 - L ) >> (64-L)) | ( ( X ) >> ( L - n ) ) )
+#define u64 unsigned long long
+#define f(x) ((LCS(x,1) & LCS(x,8)) ^ LCS(x,2))
+#define R2(x,y,k1,k2) (y^=f(x), y^=k1, x^=f(y), x^=k2)
 
 typedef struct{
-    u64 n;
-    u64 m;
-    u64 k;
-    u64 T;
-    u64 j;
+    int n;
+    int m;
+    u64 k[72];
+    int T;
+    int j;
 }simon_ctx;
 
-void Simon_set_key(simon_ctx *x, const u64 *k);
-void Simon_set_iv();
-void Simon();
+void Simon(u64 *x, u64 *y, u64 *key, int n, int keysize);
 
 
 #ifdef  __cplusplus

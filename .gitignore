@@ -5,7 +5,6 @@
 *.trs
 *.deps
 *.la
-tests
 ssl/.libs/
 Makefile
 apps/.libs/
