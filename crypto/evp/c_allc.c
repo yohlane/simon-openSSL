@@ -225,4 +225,8 @@ OpenSSL_add_all_ciphers(void)
 #ifndef OPENSSL_NO_CHACHA
 	EVP_add_cipher(EVP_chacha20());
 #endif
+
+#ifndef OPENSSL_NO_SIMON
+	//EVP_add_cipher(EVP_simon());
+#endif
 }

@@ -34,30 +34,50 @@ main(int argc, char **argv)
 	int failed = 0;
 	//printf("Simon Test\n");
 
+    simon_ctx ctx;
+
     u64 k[4]={0};
     u64 x, y;
 
     k[1]=0x0f0e0d0c0b0a0908;k[0]=0x0706050403020100;
     x = 0x6373656420737265;y = 0x6c6c657661727420;
-    Simon(&x, &y, k,64, 128);
+    Simon_init(&ctx, k, 64,128);
+    Simon_keysetup(&ctx);
+    Simon_encrypt_bytes(&ctx, &x, &y);
 
     if(x != 0x49681b1e1e54fe3f || y != 0x65aa832af84e0bbc)
         failed = 1;
 
+    Simon_decrypt_bytes(&ctx, &x, &y);
+    if(x != 0x6373656420737265 || y != 0x6c6c657661727420)
+        failed = 1;
+
     k[2]=0x1716151413121110;k[1]=0x0f0e0d0c0b0a0908;k[0]=0x0706050403020100;
     x=0x206572656874206e; y=0x6568772065626972;
-    Simon(&x, &y, k,64, 192);
+    Simon_init(&ctx, k, 64,192);
+    Simon_keysetup(&ctx);
+    Simon_encrypt_bytes(&ctx, &x, &y);
 
     if(x != 0xc4ac61effcdc0d4f || y != 0x6c9c8d6e2597b85b)
         failed = 1;
 
+    Simon_decrypt_bytes(&ctx, &x, &y);
+    if(x != 0x206572656874206e || y != 0x6568772065626972)
+        failed = 1;
+
     k[3]=0x1f1e1d1c1b1a1918;k[2]=0x1716151413121110;k[1]=0x0f0e0d0c0b0a0908;k[0]=0x0706050403020100;
     x=0x74206e69206d6f6f; y=0x6d69732061207369;
-    Simon(&x, &y, k,64, 256);
+    Simon_init(&ctx, k, 64,256);
+    Simon_keysetup(&ctx);
+    Simon_encrypt_bytes(&ctx, &x, &y);
 
     if(x != 0x8d2b5579afc8a3a0 || y != 0x3bf72a87efe7b868)
         failed = 1;
-    
+
+    Simon_decrypt_bytes(&ctx, &x, &y);
+    if(x != 0x74206e69206d6f6f || y != 0x6d69732061207369)
+        failed = 1;
+
     /*printf("Key:\t\t");
     printf("%08X",(unsigned int)(k[1]>>32));printf("%08X ",(unsigned int)k[1]);
     printf("%08X",(unsigned int)(k[0]>>32));printf("%08X\n",(unsigned int)k[0]);
