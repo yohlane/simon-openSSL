@@ -27,10 +27,33 @@ u64 Simon_z[5][62] = {
 };
 
 void
+Simon_init(simon_ctx *ctx, u64 *key, int n, int keysize){
+    int i;
+
+    ctx->n = n;
+
+    ctx->m = keysize/ctx->n;
+
+    for(i = 0;      i<ctx->m;   i++)
+        ctx->k[i]=key[i];
+
+
+    if (ctx->n == 16) {ctx->T=32;ctx->j=0;}
+    if (ctx->n == 24 && ctx->m == 3) { ctx->T=36; ctx->j=0;}
+    if (ctx->n == 24 && ctx->m == 4) { ctx->T=36; ctx->j=1;}
+    if (ctx->m==3 && ctx->n==32) {ctx->T=42;ctx->j=2;}
+    if (ctx->m==4 && ctx->n==32) {ctx->T=44;ctx->j=3;}
+    if (ctx->m==2 && ctx->n==48) {ctx->T=52;ctx->j=2;}
+    if (ctx->m==3 && ctx->n==48) {ctx->T=54;ctx->j=3;}
+    if (ctx->m==2 && ctx->n==64) {ctx->T=68;ctx->j=2;}
+    if (ctx->m==3 && ctx->n==64) {ctx->T=69;ctx->j=3;}
+    if (ctx->m==4 && ctx->n==64) {ctx->T=72;ctx->j=4;}
+}
+
+void
 Simon_keysetup(simon_ctx *ctx)
 {
-    u64 i;
-
+    int i;
     u64 tmp;
     for (i = ctx->m; i < ctx->T; i++)
         {
@@ -48,41 +71,35 @@ void
 Simon(u64 *x, u64 *y, u64 *key, int n, int keysize){
 
 	simon_ctx ctx;
-    int i;
 
-    ctx.n = n;
+    Simon_init(&ctx, key, n, keysize);
 
-    ctx.m = keysize/ctx.n;
+    Simon_keysetup(&ctx);
 
-    for(i = 0;      i<ctx.m;   i++)
-        ctx.k[i]=key[i];
-
-
-    if (ctx.n == 16) {ctx.T=32;ctx.j=0;}
-    if (ctx.n == 24 && ctx.m == 3) { ctx.T=36; ctx.j=0;}
-    if (ctx.n == 24 && ctx.m == 4) { ctx.T=36; ctx.j=1;}
-    if (ctx.m==3 && ctx.n==32) {ctx.T=42;ctx.j=2;}
-    if (ctx.m==4 && ctx.n==32) {ctx.T=44;ctx.j=3;}
-    if (ctx.m==2 && ctx.n==48) {ctx.T=52;ctx.j=2;}
-    if (ctx.m==3 && ctx.n==48) {ctx.T=54;ctx.j=3;}
-    if (ctx.m==2 && ctx.n==64) {ctx.T=68;ctx.j=2;}
-    if (ctx.m==3 && ctx.n==64) {ctx.T=69;ctx.j=3;}
-    if (ctx.m==4 && ctx.n==64) {ctx.T=72;ctx.j=4;}
-
-	Simon_keysetup(&ctx);
-
-    Simon_encrypt_bytes(&ctx, x, y);
+    Simon_encrypt_bytes(&ctx, x, y);    
 }
 
 void
 Simon_encrypt_bytes(simon_ctx *ctx, u64 *x, u64 *y)
 {
-    u64 i;
+    int i;
     u64 tmp;
     for (i = 0; i < ctx->T; i++)
     {
         tmp = *x;
         *x = *y ^ ( ROTL2(1,*x,ctx->n) & ROTL2(8,*x,ctx->n) ) ^ ROTL2(2,*x,ctx->n) ^ ctx->k[i];
         *y = tmp;
+    }
+}
+
+void Simon_decrypt_bytes(simon_ctx *ctx, u64 *x, u64 *y) 
+{
+
+    int i;
+    u64 tmp;
+    for (i = 0; i < ctx->T; i++) {
+        tmp = *y;
+        *y = *x ^ ( ROTL2(1,*y,ctx->n) & ROTL2(8,*y,ctx->n) ) ^ ROTL2(2,*y,ctx->n) ^ ctx->k[ctx->T-i-1];
+        *x = tmp;
     }
 }
