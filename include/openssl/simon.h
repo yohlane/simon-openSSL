@@ -31,12 +31,8 @@
 extern "C" {
 #endif
 
-#define LCS _lrotl //left circular shift
-//#define ROTL2( X, n, L )    ( ( ( X ) << ( n + 64 - L ) >> (64-L)) | ( ( X ) >> ( L - n ) ) )
 #define ROTL2( n, X, L )    ( ( ( X ) << ( n + 64 - L ) >> (64-L)) | ( ( X ) >> ( L - n ) ) )
 #define u64 unsigned long long
-#define f(x) ((LCS(x,1) & LCS(x,8)) ^ LCS(x,2))
-#define R2(x,y,k1,k2) (y^=f(x), y^=k1, x^=f(y), x^=k2)
 
 typedef struct{
     int n;
@@ -46,7 +42,9 @@ typedef struct{
     int j;
 }simon_ctx;
 
+void Simon_keysetup(simon_ctx *ctx);
 void Simon(u64 *x, u64 *y, u64 *key, int n, int keysize);
+void Simon_encrypt_bytes(simon_ctx *ctx, u64 *x, u64 *y);
 
 
 #ifdef  __cplusplus

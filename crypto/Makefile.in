@@ -342,37 +342,37 @@ am_libcrypto_la_OBJECTS = libcrypto_la-cpt_err.lo \
 	evp/libcrypto_la-e_idea.lo evp/libcrypto_la-e_null.lo \
 	evp/libcrypto_la-e_old.lo evp/libcrypto_la-e_rc2.lo \
 	evp/libcrypto_la-e_rc4.lo evp/libcrypto_la-e_rc4_hmac_md5.lo \
-	evp/libcrypto_la-e_simon.lo \
-	evp/libcrypto_la-e_xcbc_d.lo evp/libcrypto_la-encode.lo \
-	evp/libcrypto_la-evp_aead.lo evp/libcrypto_la-evp_enc.lo \
-	evp/libcrypto_la-evp_err.lo evp/libcrypto_la-evp_key.lo \
-	evp/libcrypto_la-evp_lib.lo evp/libcrypto_la-evp_pbe.lo \
-	evp/libcrypto_la-evp_pkey.lo evp/libcrypto_la-m_dss.lo \
-	evp/libcrypto_la-m_dss1.lo evp/libcrypto_la-m_ecdsa.lo \
-	evp/libcrypto_la-m_md4.lo evp/libcrypto_la-m_md5.lo \
-	evp/libcrypto_la-m_mdc2.lo evp/libcrypto_la-m_null.lo \
-	evp/libcrypto_la-m_ripemd.lo evp/libcrypto_la-m_sha.lo \
-	evp/libcrypto_la-m_sha1.lo evp/libcrypto_la-m_sigver.lo \
-	evp/libcrypto_la-m_wp.lo evp/libcrypto_la-names.lo \
-	evp/libcrypto_la-p5_crpt.lo evp/libcrypto_la-p5_crpt2.lo \
-	evp/libcrypto_la-p_dec.lo evp/libcrypto_la-p_enc.lo \
-	evp/libcrypto_la-p_lib.lo evp/libcrypto_la-p_open.lo \
-	evp/libcrypto_la-p_seal.lo evp/libcrypto_la-p_sign.lo \
-	evp/libcrypto_la-p_verify.lo evp/libcrypto_la-pmeth_fn.lo \
-	evp/libcrypto_la-pmeth_gn.lo evp/libcrypto_la-pmeth_lib.lo \
-	hmac/libcrypto_la-hm_ameth.lo hmac/libcrypto_la-hm_pmeth.lo \
-	hmac/libcrypto_la-hmac.lo idea/libcrypto_la-i_cbc.lo \
-	idea/libcrypto_la-i_cfb64.lo idea/libcrypto_la-i_ecb.lo \
-	idea/libcrypto_la-i_ofb64.lo idea/libcrypto_la-i_skey.lo \
-	krb5/libcrypto_la-krb5_asn.lo lhash/libcrypto_la-lh_stats.lo \
-	lhash/libcrypto_la-lhash.lo md4/libcrypto_la-md4_dgst.lo \
-	md4/libcrypto_la-md4_one.lo md5/libcrypto_la-md5_dgst.lo \
-	md5/libcrypto_la-md5_one.lo mdc2/libcrypto_la-mdc2_one.lo \
-	mdc2/libcrypto_la-mdc2dgst.lo modes/libcrypto_la-cbc128.lo \
-	modes/libcrypto_la-ccm128.lo modes/libcrypto_la-cfb128.lo \
-	modes/libcrypto_la-ctr128.lo modes/libcrypto_la-cts128.lo \
-	modes/libcrypto_la-gcm128.lo modes/libcrypto_la-ofb128.lo \
-	modes/libcrypto_la-xts128.lo objects/libcrypto_la-o_names.lo \
+	evp/libcrypto_la-e_simon.lo evp/libcrypto_la-e_xcbc_d.lo \
+	evp/libcrypto_la-encode.lo evp/libcrypto_la-evp_aead.lo \
+	evp/libcrypto_la-evp_enc.lo evp/libcrypto_la-evp_err.lo \
+	evp/libcrypto_la-evp_key.lo evp/libcrypto_la-evp_lib.lo \
+	evp/libcrypto_la-evp_pbe.lo evp/libcrypto_la-evp_pkey.lo \
+	evp/libcrypto_la-m_dss.lo evp/libcrypto_la-m_dss1.lo \
+	evp/libcrypto_la-m_ecdsa.lo evp/libcrypto_la-m_md4.lo \
+	evp/libcrypto_la-m_md5.lo evp/libcrypto_la-m_mdc2.lo \
+	evp/libcrypto_la-m_null.lo evp/libcrypto_la-m_ripemd.lo \
+	evp/libcrypto_la-m_sha.lo evp/libcrypto_la-m_sha1.lo \
+	evp/libcrypto_la-m_sigver.lo evp/libcrypto_la-m_wp.lo \
+	evp/libcrypto_la-names.lo evp/libcrypto_la-p5_crpt.lo \
+	evp/libcrypto_la-p5_crpt2.lo evp/libcrypto_la-p_dec.lo \
+	evp/libcrypto_la-p_enc.lo evp/libcrypto_la-p_lib.lo \
+	evp/libcrypto_la-p_open.lo evp/libcrypto_la-p_seal.lo \
+	evp/libcrypto_la-p_sign.lo evp/libcrypto_la-p_verify.lo \
+	evp/libcrypto_la-pmeth_fn.lo evp/libcrypto_la-pmeth_gn.lo \
+	evp/libcrypto_la-pmeth_lib.lo hmac/libcrypto_la-hm_ameth.lo \
+	hmac/libcrypto_la-hm_pmeth.lo hmac/libcrypto_la-hmac.lo \
+	idea/libcrypto_la-i_cbc.lo idea/libcrypto_la-i_cfb64.lo \
+	idea/libcrypto_la-i_ecb.lo idea/libcrypto_la-i_ofb64.lo \
+	idea/libcrypto_la-i_skey.lo krb5/libcrypto_la-krb5_asn.lo \
+	lhash/libcrypto_la-lh_stats.lo lhash/libcrypto_la-lhash.lo \
+	md4/libcrypto_la-md4_dgst.lo md4/libcrypto_la-md4_one.lo \
+	md5/libcrypto_la-md5_dgst.lo md5/libcrypto_la-md5_one.lo \
+	mdc2/libcrypto_la-mdc2_one.lo mdc2/libcrypto_la-mdc2dgst.lo \
+	modes/libcrypto_la-cbc128.lo modes/libcrypto_la-ccm128.lo \
+	modes/libcrypto_la-cfb128.lo modes/libcrypto_la-ctr128.lo \
+	modes/libcrypto_la-cts128.lo modes/libcrypto_la-gcm128.lo \
+	modes/libcrypto_la-ofb128.lo modes/libcrypto_la-xts128.lo \
+	objects/libcrypto_la-o_names.lo \
 	objects/libcrypto_la-obj_dat.lo \
 	objects/libcrypto_la-obj_err.lo \
 	objects/libcrypto_la-obj_lib.lo \
@@ -421,10 +421,9 @@ am_libcrypto_la_OBJECTS = libcrypto_la-cpt_err.lo \
 	sha/libcrypto_la-sha1dgst.lo sha/libcrypto_la-sha256.lo \
 	sha/libcrypto_la-sha512.lo sha/libcrypto_la-sha_dgst.lo \
 	sha/libcrypto_la-sha_one.lo simon/libcrypto_la-simon.lo \
-	stack/libcrypto_la-stack.lo \
-	ts/libcrypto_la-ts_asn1.lo ts/libcrypto_la-ts_conf.lo \
-	ts/libcrypto_la-ts_err.lo ts/libcrypto_la-ts_lib.lo \
-	ts/libcrypto_la-ts_req_print.lo \
+	stack/libcrypto_la-stack.lo ts/libcrypto_la-ts_asn1.lo \
+	ts/libcrypto_la-ts_conf.lo ts/libcrypto_la-ts_err.lo \
+	ts/libcrypto_la-ts_lib.lo ts/libcrypto_la-ts_req_print.lo \
 	ts/libcrypto_la-ts_req_utils.lo \
 	ts/libcrypto_la-ts_rsp_print.lo ts/libcrypto_la-ts_rsp_sign.lo \
 	ts/libcrypto_la-ts_rsp_utils.lo \
@@ -760,10 +759,10 @@ libcrypto_la_SOURCES = cpt_err.c cryptlib.c cversion.c ex_data.c \
 	evp/e_aes_cbc_hmac_sha1.c evp/e_bf.c evp/e_cast.c \
 	evp/e_chacha.c evp/e_chacha20poly1305.c evp/e_des.c \
 	evp/e_des3.c evp/e_idea.c evp/e_null.c evp/e_old.c evp/e_rc2.c \
-	evp/e_rc4.c evp/e_rc4_hmac_md5.c evp/e_simon.c evp/e_xcbc_d.c evp/encode.c \
-	evp/evp_aead.c evp/evp_enc.c evp/evp_err.c evp/evp_key.c \
-	evp/evp_lib.c evp/evp_pbe.c evp/evp_pkey.c evp/m_dss.c \
-	evp/m_dss1.c evp/m_ecdsa.c evp/m_md4.c evp/m_md5.c \
+	evp/e_rc4.c evp/e_rc4_hmac_md5.c evp/e_simon.c evp/e_xcbc_d.c \
+	evp/encode.c evp/evp_aead.c evp/evp_enc.c evp/evp_err.c \
+	evp/evp_key.c evp/evp_lib.c evp/evp_pbe.c evp/evp_pkey.c \
+	evp/m_dss.c evp/m_dss1.c evp/m_ecdsa.c evp/m_md4.c evp/m_md5.c \
 	evp/m_mdc2.c evp/m_null.c evp/m_ripemd.c evp/m_sha.c \
 	evp/m_sha1.c evp/m_sigver.c evp/m_wp.c evp/names.c \
 	evp/p5_crpt.c evp/p5_crpt2.c evp/p_dec.c evp/p_enc.c \
@@ -800,9 +799,8 @@ libcrypto_la_SOURCES = cpt_err.c cryptlib.c cversion.c ex_data.c \
 	rsa/rsa_prn.c rsa/rsa_pss.c rsa/rsa_saos.c rsa/rsa_sign.c \
 	rsa/rsa_ssl.c rsa/rsa_x931.c sha/sha1_one.c sha/sha1dgst.c \
 	sha/sha256.c sha/sha512.c sha/sha_dgst.c sha/sha_one.c \
-	simon/simon.c \
-	stack/stack.c ts/ts_asn1.c ts/ts_conf.c ts/ts_err.c \
-	ts/ts_lib.c ts/ts_req_print.c ts/ts_req_utils.c \
+	simon/simon.c stack/stack.c ts/ts_asn1.c ts/ts_conf.c \
+	ts/ts_err.c ts/ts_lib.c ts/ts_req_print.c ts/ts_req_utils.c \
 	ts/ts_rsp_print.c ts/ts_rsp_sign.c ts/ts_rsp_utils.c \
 	ts/ts_rsp_verify.c ts/ts_verify_ctx.c txt_db/txt_db.c \
 	ui/ui_err.c ui/ui_lib.c ui/ui_openssl.c ui/ui_util.c \
@@ -826,8 +824,7 @@ libcrypto_la_SOURCES = cpt_err.c cryptlib.c cversion.c ex_data.c \
 	x509v3/v3_prn.c x509v3/v3_purp.c x509v3/v3_skey.c \
 	x509v3/v3_sxnet.c x509v3/v3_utl.c x509v3/v3err.c
 EXTRA_libcrypto_la_SOURCES = des/ncbc_enc.c chacha/chacha-merged.c \
-	poly1305/poly1305-donna.c \
-	simon/simon-merge.c
+	poly1305/poly1305-donna.c simon/simon-merged.c
 all: all-am
 
 .SUFFIXES:
