@@ -113,20 +113,20 @@ void Simon_decrypt_bytes(simon_ctx *ctx, u64 *x, u64 *y)
 void
 Simon_encrypt(const unsigned char *in, unsigned char *out, simon_ctx *ctx)
 {
-    int i;
+    //int i;
     //printf("Simon_encrypt: start\n");
     assert(in && out && ctx);
 
     //u64 x, y;
     //x = GETU64(in);
 
-    printf("Simon_encrypt : in: "); for(i = 0; i < 16; i++) printf("%02x ",in[i]); printf("\n");
+    //printf("Simon_encrypt : in: "); for(i = 0; i < 16; i++) printf("%02x ",in[i]); printf("\n");
 
     u64 x = GETU64(in), y = GETU64(in + 8);
 
-    printf("PlainText:\t");
+    /*printf("PlainText:\t");
     printf("%08X",(unsigned int)(x>>32));printf("%08X ",(unsigned int)x);
-    printf("%08X",(unsigned int)(y>>32));printf("%08X\n",(unsigned int)y);
+    printf("%08X",(unsigned int)(y>>32));printf("%08X\n",(unsigned int)y);*/
 
     Simon_encrypt_bytes(ctx, &x, &y);
 
@@ -142,20 +142,21 @@ void
 Simon_decrypt(const unsigned char *in, unsigned char *out, simon_ctx *ctx)
 {
 
-    int i;
+    //int i;
     //printf("Simon_encrypt: start\n");
     assert(in && out && ctx);
 
     //u64 x, y;
     //x = GETU64(in);
 
-    printf("Simon_encrypt : in: "); for(i = 0; i < 16; i++) printf("%02x ",in[i]); printf("\n");
+    //printf("Simon_encrypt : in: "); for(i = 0; i < 16; i++) printf("%02x ",in[i]); printf("\n");
 
     u64 x = GETU64(in), y = GETU64(in + 8);
 
+    /*
     printf("PlainText:\t");
     printf("%08X",(unsigned int)(x>>32));printf("%08X ",(unsigned int)x);
-    printf("%08X",(unsigned int)(y>>32));printf("%08X\n",(unsigned int)y);
+    printf("%08X",(unsigned int)(y>>32));printf("%08X\n",(unsigned int)y);*/
 
     Simon_decrypt_bytes(ctx, &x, &y);
 

@@ -189,7 +189,7 @@ static const char *names[ALGOR_NUM] = {
 	"aes-128 cbc", "aes-192 cbc", "aes-256 cbc",
 	"camellia-128 cbc", "camellia-192 cbc", "camellia-256 cbc",
 	"evp", "sha256", "sha512", "whirlpool",
-"aes-128 ige", "aes-192 ige", "aes-256 ige", "ghash", "simon-128-cbc"};
+"aes-128 ige", "aes-192 ige", "aes-256 ige", "ghash", "simon"};
 static double results[ALGOR_NUM][SIZE_NUM];
 static int lengths[SIZE_NUM] = {16, 64, 256, 1024, 8 * 1024};
 static double rsa_results[RSA_NUM][2];
@@ -326,6 +326,7 @@ speed_main(int argc, char **argv)
 #endif
 #ifndef OPENSSL_NO_AES
 #define MAX_BLOCK_SIZE 128
+#endif
 #ifndef OPENSSL_NO_SIMON
 #define MAX_BLOCK_SIZE 128
 #else
@@ -699,7 +700,7 @@ speed_main(int argc, char **argv)
 		else
 #endif
 #ifndef OPENSSL_NO_SIMON
-	 if (strcmp(*argv, "simon-128-cbc") == 0)
+	 if (strcmp(*argv, "simon") == 0)
 	 	doit[D_CBC_128_SIMON] = 1;
 	 /*if (strcmp(*argv, "anubis-160-cbc") == 0)
 	 	doit[D_CBC_160_ANUBIS] = 1;
@@ -957,7 +958,7 @@ speed_main(int argc, char **argv)
 			BIO_printf(bio_err, "camellia-128-cbc camellia-192-cbc camellia-256-cbc ");
 #endif
 #ifndef OPENSSL_NO_SIMON
-			BIO_printf(bio_err, "simon-128-cbc");
+			BIO_printf(bio_err, "simon ");
 #endif
 #ifndef OPENSSL_NO_RC4
 			BIO_printf(bio_err, "rc4");
@@ -1094,6 +1095,7 @@ speed_main(int argc, char **argv)
     for (i = 0; i < 128 / 8 / 8; ++i)
         u64Key[(128 / 8 / 8) - i -1] = GETU64(skey24 + 8*i);
 	Simon_init(&simon_ks1,u64Key,64,128);
+	Simon_keysetup(&simon_ks1);
 #endif
 #ifndef OPENSSL_NO_IDEA
 	idea_set_encrypt_key(key16, &idea_ks);
