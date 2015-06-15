@@ -82,14 +82,14 @@ const unsigned char *iv, int enc)
     //printf("key_len %d\ni: %d\n", ctx->key_len, ctx->key_len / 8);
 
 
-    printf("Key:\t\t");
+    //printf("Key:\t\t");
     for (i = 0; i < ctx->key_len / 8; ++i)
     {
         u64Key[(ctx->key_len / 8) - i -1] = GETU64(key + 8*i);
-        printf("%08X",(unsigned int)(u64Key[(ctx->key_len / 8) - i -1]>>32));printf("%08X ",(unsigned int)u64Key[(ctx->key_len / 8) - i -1]);
+        //printf("%08X",(unsigned int)(u64Key[(ctx->key_len / 8) - i -1]>>32));printf("%08X ",(unsigned int)u64Key[(ctx->key_len / 8) - i -1]);
 
     }
-    printf("\n");
+    //printf("\n");
 
     EVP_SIMON_KEY *dat = (EVP_SIMON_KEY *)ctx->cipher_data;
     Simon_init(&dat->ks, u64Key, 64,ctx->key_len * 8);

@@ -150,6 +150,9 @@
 #ifndef OPENSSL_NO_SHA
 #include <openssl/sha.h>
 #endif
+#ifndef OPENSSL_NO_SIMON
+#include <openssl/simon.h>
+#endif
 #ifndef OPENSSL_NO_WHIRLPOOL
 #include <openssl/whrlpool.h>
 #endif
@@ -171,7 +174,7 @@ pkey_print_message(const char *str, const char *str2,
 static void print_result(int alg, int run_no, int count, double time_used);
 static int do_multi(int multi);
 
-#define ALGOR_NUM	30
+#define ALGOR_NUM	31
 #define SIZE_NUM	5
 #define RSA_NUM		4
 #define DSA_NUM		3
@@ -186,7 +189,7 @@ static const char *names[ALGOR_NUM] = {
 	"aes-128 cbc", "aes-192 cbc", "aes-256 cbc",
 	"camellia-128 cbc", "camellia-192 cbc", "camellia-256 cbc",
 	"evp", "sha256", "sha512", "whirlpool",
-"aes-128 ige", "aes-192 ige", "aes-256 ige", "ghash"};
+"aes-128 ige", "aes-192 ige", "aes-256 ige", "ghash", "simon-128-cbc"};
 static double results[ALGOR_NUM][SIZE_NUM];
 static int lengths[SIZE_NUM] = {16, 64, 256, 1024, 8 * 1024};
 static double rsa_results[RSA_NUM][2];
@@ -310,7 +313,20 @@ speed_main(int argc, char **argv)
 		0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0, 0x12, 0x34,
 	0x78, 0x9a, 0xbc, 0xde, 0xf0, 0x12, 0x34, 0x56};
 #endif
+#ifndef OPENSSL_NO_SIMON
+	static const unsigned char skey24[24] =
+	{0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0,
+		0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0, 0x12,
+	0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0, 0x12, 0x34};
+	/*static const unsigned char skey32[32] =
+	{0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0,
+		0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0, 0x12,
+		0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0, 0x12, 0x34,
+	0x78, 0x9a, 0xbc, 0xde, 0xf0, 0x12, 0x34, 0x56};*/
+#endif
 #ifndef OPENSSL_NO_AES
+#define MAX_BLOCK_SIZE 128
+#ifndef OPENSSL_NO_SIMON
 #define MAX_BLOCK_SIZE 128
 #else
 #define MAX_BLOCK_SIZE 64
@@ -330,6 +346,9 @@ speed_main(int argc, char **argv)
 #endif
 #ifndef OPENSSL_NO_CAMELLIA
 	CAMELLIA_KEY camellia_ks1, camellia_ks2, camellia_ks3;
+#endif
+#ifndef OPENSSL_NO_SIMON
+	simon_ctx simon_ks1;
 #endif
 #define	D_MD2		0
 #define	D_MDC2		1
@@ -361,6 +380,7 @@ speed_main(int argc, char **argv)
 #define D_IGE_192_AES   27
 #define D_IGE_256_AES   28
 #define D_GHASH		29
+#define D_CBC_128_SIMON 30
 	double d = 0.0;
 	long c[ALGOR_NUM][SIZE_NUM];
 #define	R_DSA_512	0
@@ -678,6 +698,19 @@ speed_main(int argc, char **argv)
 			doit[D_CBC_256_CML] = 1;
 		else
 #endif
+#ifndef OPENSSL_NO_SIMON
+	 if (strcmp(*argv, "simon-128-cbc") == 0)
+	 	doit[D_CBC_128_SIMON] = 1;
+	 /*if (strcmp(*argv, "anubis-160-cbc") == 0)
+	 	doit[D_CBC_160_ANUBIS] = 1;
+	 else if (strcmp(*argv, "anubis-192-cbc") == 0)
+	 	doit[D_CBC_192_ANUBIS] = 1;
+	 else if (strcmp(*argv, "anubis-224-cbc") == 0)
+	 	doit[D_CBC_224_ANUBIS] = 1;
+	 else if (strcmp(*argv, "anubis-256-cbc") == 0)
+	 	doit[D_CBC_256_ANUBIS] = 1;*/
+	 //else
+#endif			
 #if 0				/* was: #ifdef RSAref */
 		if (strcmp(*argv, "rsaref") == 0) {
 			RSA_set_default_openssl_method(RSA_PKCS1_RSAref());
@@ -765,6 +798,15 @@ speed_main(int argc, char **argv)
 			doit[D_CBC_192_CML] = 1;
 			doit[D_CBC_256_CML] = 1;
 		} else
+#endif
+#ifndef OPENSSL_NO_SIMON
+	 if (strcmp(*argv, "simon") == 0) {
+		 doit[D_CBC_128_SIMON] = 1;
+		 /*doit[D_CBC_160_ANUBIS] = 1;
+		 doit[D_CBC_192_ANUBIS] = 1;
+		 doit[D_CBC_224_ANUBIS] = 1;
+		 doit[D_CBC_256_ANUBIS] = 1;*/
+	 } //else
 #endif
 		if (strcmp(*argv, "rsa") == 0) {
 			rsa_doit[R_RSA_512] = 1;
@@ -914,6 +956,9 @@ speed_main(int argc, char **argv)
 			BIO_printf(bio_err, "\n");
 			BIO_printf(bio_err, "camellia-128-cbc camellia-192-cbc camellia-256-cbc ");
 #endif
+#ifndef OPENSSL_NO_SIMON
+			BIO_printf(bio_err, "simon-128-cbc");
+#endif
 #ifndef OPENSSL_NO_RC4
 			BIO_printf(bio_err, "rc4");
 #endif
@@ -943,6 +988,9 @@ speed_main(int argc, char **argv)
 #ifndef OPENSSL_NO_AES
 			BIO_printf(bio_err, "aes      ");
 #endif
+#ifndef OPENSSL_NO_SIMON
+	BIO_printf(bio_err, "simon ");
+#endif
 #ifndef OPENSSL_NO_CAMELLIA
 			BIO_printf(bio_err, "camellia ");
 #endif
@@ -953,7 +1001,9 @@ speed_main(int argc, char **argv)
 #if !defined(OPENSSL_NO_IDEA) || !defined(OPENSSL_NO_SEED) || \
     !defined(OPENSSL_NO_RC2) || !defined(OPENSSL_NO_DES) || \
     !defined(OPENSSL_NO_RSA) || !defined(OPENSSL_NO_BF) || \
-    !defined(OPENSSL_NO_AES) || !defined(OPENSSL_NO_CAMELLIA)
+    !defined(OPENSSL_NO_AES) || !defined(OPENSSL_NO_CAMELLIA) || \
+    !defined(OPENSSL_NO_SIMON)
+
 			BIO_printf(bio_err, "\n");
 #endif
 
@@ -1038,6 +1088,12 @@ speed_main(int argc, char **argv)
 	Camellia_set_key(key16, 128, &camellia_ks1);
 	Camellia_set_key(ckey24, 192, &camellia_ks2);
 	Camellia_set_key(ckey32, 256, &camellia_ks3);
+#endif
+#ifndef OPENSSL_NO_SIMON
+    u64 u64Key[75] = {0};
+    for (i = 0; i < 128 / 8 / 8; ++i)
+        u64Key[(128 / 8 / 8) - i -1] = GETU64(skey24 + 8*i);
+	Simon_init(&simon_ks1,u64Key,64,128);
 #endif
 #ifndef OPENSSL_NO_IDEA
 	idea_set_encrypt_key(key16, &idea_ks);
@@ -1159,6 +1215,24 @@ speed_main(int argc, char **argv)
 		}
 	}
 #endif
+#endif
+
+#ifndef OPENSSL_NO_SIMON
+	if (doit[D_CBC_128_SIMON]) {
+		for (j = 0; j < SIZE_NUM; j++) {
+			print_message(names[D_CBC_128_SIMON], c[D_CBC_128_SIMON][j], lengths[j]);
+			Time_F(START);
+			for (count = 0, run = 1; COND(c[D_CBC_128_SIMON][j]); count++)
+			{
+				Simon_cbc_encrypt(buf, buf,
+				(unsigned long) lengths[j], &simon_ks1,
+				iv, 1);
+			}
+			d = Time_F(STOP);
+			print_result(D_CBC_128_SIMON, j, count, d);
+		}
+	}
+
 #endif
 
 #ifndef OPENSSL_NO_WHIRLPOOL
