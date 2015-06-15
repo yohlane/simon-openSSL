@@ -27,7 +27,7 @@
 
 typedef struct {
     simon_ctx ks;
-    block128_f block;
+    //block128_f block;
     cbc128_f cbc;
 } EVP_SIMON_KEY;
 
@@ -57,55 +57,21 @@ const unsigned char *in, size_t len){
 
     EVP_SIMON_KEY *dat = (EVP_SIMON_KEY *)ctx->cipher_data;
 
-    printf("simon_cipher: start : len %d\n",len);
+    //printf("simon_cipher: start : len %d\n",len);
 
-    
-    int i;
-
-    printf("in: "); for(i = 0; i < 16; i++) printf("%02x ",in[i]); printf("\n");
-
-    u64 x = GETU64(in), y = GETU64(in + 8);
-
-    printf("IN:\t");
-    printf("%08X",(unsigned int)(x>>32));printf("%08X ",(unsigned int)x);
-    printf("%08X",(unsigned int)(y>>32));printf("%08X\n",(unsigned int)y);
-
-    if (dat->cbc)
-        Simon_encrypt_bytes(&dat->ks, &x, &y);
-    else
-        Simon_decrypt_bytes(&dat->ks, &x, &y);
-
-    printf("OUT:\t");
-    printf("%08X",(unsigned int)(x>>32));printf("%08X ",(unsigned int)x);
-    printf("%08X",(unsigned int)(y>>32));printf("%08X\n",(unsigned int)y);
-
-    PUTU32(out, x);PUTU32(out + 8, y);
-
-
-    printf("out: "); for(i = 0; i < 16; i++) printf("%02x ",out[i]); printf("\n");
-    
-    /*
     if (dat->cbc){
         //printf("cbc\n");
         (*dat->cbc)(in, out, len, &dat->ks, ctx->iv,ctx->encrypt);
     }
-    else if (ctx->encrypt){
-        //printf("ctx_encrypt\n");
-        CRYPTO_cbc128_encrypt(in, out, len, &dat->ks, ctx->iv,dat->block);
-    }
-    else{
-        //printf("ctx_decrypt\n");
-        CRYPTO_cbc128_decrypt(in, out, len, &dat->ks, ctx->iv,dat->block);
-    }
-    printf("out: "); for(i = 0; i < 16; i++) printf("%02x ",out[i]); printf("\n");
-    */
+    //printf("out: "); for(i = 0; i < 16; i++) printf("%02x ",out[i]); printf("\n");
+    
     return 1;
 }
 static int
 simon_init(EVP_CIPHER_CTX *ctx, const unsigned char *key,
 const unsigned char *iv, int enc)
 {
-    printf("simon_init CBC \n");
+    //printf("simon_init CBC \n");
 
     int mode;
     int i;

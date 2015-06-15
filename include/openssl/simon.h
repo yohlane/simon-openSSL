@@ -38,6 +38,7 @@ extern "C" {
 #define ROTL2( n, X, L )    ( ( ( X ) << ( n + 64 - L ) >> (64-L)) | ( ( X ) >> ( L - n ) ) )
 //#define u64 unsigned long long
 typedef unsigned long long u64;
+typedef unsigned char u8;
 
 typedef struct{
     int n;
@@ -53,8 +54,8 @@ void Simon(u64 *x, u64 *y, u64 *key, int n, int keysize);
 void Simon_encrypt_bytes(simon_ctx *ctx, u64 *x, u64 *y);
 void Simon_decrypt_bytes(simon_ctx *ctx, u64 *x, u64 *y);
 
-void Simon_encrypt(const unsigned char *in, unsigned char *out, const u64 *key);
-void Simon_decrypt(const unsigned char *in, unsigned char *out, const u64 *key);
+void Simon_encrypt(const unsigned char *in, unsigned char *out, simon_ctx *ctx);
+void Simon_decrypt(const unsigned char *in, unsigned char *out, simon_ctx *ctx);
 void Simon_cbc_encrypt(const unsigned char *in, unsigned char *out,
   size_t len, const simon_ctx *key, unsigned char *ivec, const int enc);
 
