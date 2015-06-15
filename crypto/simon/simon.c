@@ -17,6 +17,8 @@
 #include <stdint.h>
 
 #include <openssl/simon.h>
+#include <assert.h>
+#include <openssl/modes.h>
 
 u64 Simon_z[5][62] = {
     {1,1,1,1,1,0,1,0,0,0,1,0,0,1,0,1,0,1,1,0,0,0,0,1,1,1,0,0,1,1,0,1,1,1,1,1,0,1,0,0,0,1,0,0,1,0,1,0,1,1,0,0,0,0,1,1,1,0,0,1,1,0},
@@ -102,4 +104,58 @@ void Simon_decrypt_bytes(simon_ctx *ctx, u64 *x, u64 *y)
         *y = *x ^ ( ROTL2(1,*y,ctx->n) & ROTL2(8,*y,ctx->n) ) ^ ROTL2(2,*y,ctx->n) ^ ctx->k[ctx->T-i-1];
         *x = tmp;
     }
+}
+
+/*
+ * Encrypt a single block
+ * in and out can overlap
+ */
+void
+Simon_encrypt(const unsigned char *in, unsigned char *out, const u64 *key)
+{
+    int i;
+    //printf("Simon_encrypt: start\n");
+    assert(in && out && key);
+
+    //u64 x, y;
+    //x = GETU64(in);
+
+    printf("in: "); for(i = 0; i < 16; i++) printf("%02x ",in[i]); printf("\n");
+
+    u64 x = GETU64(in), y = GETU64(in + 8);
+
+    printf("PlainText:\t");
+    printf("%08X",(unsigned int)(x>>32));printf("%08X ",(unsigned int)x);
+    printf("%08X",(unsigned int)(y>>32));printf("%08X\n",(unsigned int)y);
+
+    //Simon_encrypt_bytes(simon_ctx *ctx, &x, &y)
+
+}
+
+/*
+ * Encrypt a single block
+ * in and out can overlap
+ */
+void
+Simon_decrypt(const unsigned char *in, unsigned char *out, const u64 *key)
+{
+
+    //printf("Simon_decrypt: start\n");
+    assert(in && out && key);
+
+    //u64 x, y;
+    //x = GETU64(in);
+
+}
+
+void
+Simon_cbc_encrypt(const unsigned char *in, unsigned char *out,
+size_t len, const simon_ctx *key, unsigned char *ivec, const int enc)
+{
+
+    //printf("Simon_cbc_encrypt\n");
+    if (enc)
+        CRYPTO_cbc128_encrypt(in, out, len, key, ivec, (block128_f) Simon_encrypt);
+    else
+        CRYPTO_cbc128_decrypt(in, out, len, key, ivec, (block128_f) Simon_decrypt);
 }

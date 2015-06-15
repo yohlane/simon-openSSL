@@ -227,6 +227,6 @@ OpenSSL_add_all_ciphers(void)
 #endif
 
 #ifndef OPENSSL_NO_SIMON
-	//EVP_add_cipher(EVP_simon());
+	EVP_add_cipher(EVP_simon_128_cbc());
 #endif
 }

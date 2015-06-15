@@ -31,71 +31,110 @@ typedef struct {
     cbc128_f cbc;
 } EVP_SIMON_KEY;
 
-static int simon_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
+static int simon_cbc_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
 const unsigned char *in, size_t len);
 static int simon_init(EVP_CIPHER_CTX *ctx, const unsigned char *key,
 const unsigned char *iv, int enc);
 
-static const EVP_CIPHER simon_128_cipher = {
-    .nid = 15,// NID_simon_128_cbc,
-    .block_size = 128,
+static const EVP_CIPHER simon_128_cbc_cipher = {
+    .nid =  NID_simon,
+    .block_size = 128 /8,
     .key_len = 128 / 8,
     .flags = EVP_CIPH_CBC_MODE,
     .init = simon_init,
-    .do_cipher = simon_cipher,
+    .do_cipher = simon_cbc_cipher,
     .ctx_size = sizeof(simon_ctx)
 };
 
 const EVP_CIPHER *
 EVP_simon_128_cbc(void)
 {
-    return (&simon_128_cipher);
+    return (&simon_128_cbc_cipher);
 }
 
-static int simon_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
+static int simon_cbc_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
 const unsigned char *in, size_t len){
 
     EVP_SIMON_KEY *dat = (EVP_SIMON_KEY *)ctx->cipher_data;
 
-    printf("simon_cipher_128: start : len %d\n",len);
+    printf("simon_cipher: start : len %d\n",len);
+
+    
     int i;
-    //~ printf("in: "); for(i = 0; i < 16; i++) printf("%02x ",in[i]); printf("\n");
+
+    printf("in: "); for(i = 0; i < 16; i++) printf("%02x ",in[i]); printf("\n");
+
+    u64 x = GETU64(in), y = GETU64(in + 8);
+
+    printf("IN:\t");
+    printf("%08X",(unsigned int)(x>>32));printf("%08X ",(unsigned int)x);
+    printf("%08X",(unsigned int)(y>>32));printf("%08X\n",(unsigned int)y);
+
+    if (dat->cbc)
+        Simon_encrypt_bytes(&dat->ks, &x, &y);
+    else
+        Simon_decrypt_bytes(&dat->ks, &x, &y);
+
+    printf("OUT:\t");
+    printf("%08X",(unsigned int)(x>>32));printf("%08X ",(unsigned int)x);
+    printf("%08X",(unsigned int)(y>>32));printf("%08X\n",(unsigned int)y);
+
+    PUTU32(out, x);PUTU32(out + 8, y);
+
+
+    printf("out: "); for(i = 0; i < 16; i++) printf("%02x ",out[i]); printf("\n");
+    
+    /*
     if (dat->cbc){
-        //~ printf("cdc\n");
+        //printf("cbc\n");
         (*dat->cbc)(in, out, len, &dat->ks, ctx->iv,ctx->encrypt);
     }
     else if (ctx->encrypt){
-        //~ printf("ctx_encrypt\n");
+        //printf("ctx_encrypt\n");
         CRYPTO_cbc128_encrypt(in, out, len, &dat->ks, ctx->iv,dat->block);
     }
     else{
-        //~ printf("ctx_decrypt\n");
+        //printf("ctx_decrypt\n");
         CRYPTO_cbc128_decrypt(in, out, len, &dat->ks, ctx->iv,dat->block);
     }
     printf("out: "); for(i = 0; i < 16; i++) printf("%02x ",out[i]); printf("\n");
+    */
     return 1;
 }
 static int
 simon_init(EVP_CIPHER_CTX *ctx, const unsigned char *key,
 const unsigned char *iv, int enc)
 {
-    /*int ret, mode;
+    printf("simon_init CBC \n");
+
+    int mode;
+    int i;
+    //printf("key: "); for(i = 0; i < 16; i++) printf("%02x ",key[i]); printf("\n");
+
+    u64 u64Key[75] = {0};
+
+    //printf("key_len %d\ni: %d\n", ctx->key_len, ctx->key_len / 8);
+
+
+    printf("Key:\t\t");
+    for (i = 0; i < ctx->key_len / 8; ++i)
+    {
+        u64Key[(ctx->key_len / 8) - i -1] = GETU64(key + 8*i);
+        printf("%08X",(unsigned int)(u64Key[(ctx->key_len / 8) - i -1]>>32));printf("%08X ",(unsigned int)u64Key[(ctx->key_len / 8) - i -1]);
+
+    }
+    printf("\n");
 
     EVP_SIMON_KEY *dat = (EVP_SIMON_KEY *)ctx->cipher_data;
+    Simon_init(&dat->ks, u64Key, 64,ctx->key_len * 8);
+    Simon_keysetup(&dat->ks);
+
     mode = ctx->cipher->flags & EVP_CIPH_MODE;
     if ((mode == EVP_CIPH_CBC_MODE) && !enc) {
-        Simon_keysetup(key, ctx->key_len * 8,
-        &dat->ks);
-        dat->cbc = (cbc128_f)SIMON_cbc_encrypt;
+        dat->cbc = (cbc128_f)Simon_cbc_encrypt;
     } else {
-        Simon_keysetup(key, ctx->key_len * 8,
-        &dat->ks);
-        dat->cbc = (cbc128_f)SIMON_cbc_encrypt;
+        dat->cbc = (cbc128_f)Simon_cbc_encrypt;
     }
-    if (ret < 0) {
-        printf("e_simon.c -> simon_init: ret < 0 ERROR");
-        return 0;
-    }*/
     return 1;
 }
 #endif
